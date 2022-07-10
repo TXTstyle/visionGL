@@ -1,5 +1,7 @@
 #include "Renderer2D.hpp"
 
+#include "Manager.hpp"
+
 
 void GLAPIENTRY Vision2D::errorOccurredGL(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam) {
     if (severity > 0x826b)
@@ -182,13 +184,15 @@ void Renderer2D::DrawQuad(const vec2f p_pos, const vec2f size, const vec4f color
     
 }
 
-void Renderer2D::DrawQuad(const vec2f p_pos, const vec2f size, uint32_t texID) {
+void Renderer2D::DrawQuad(const vec2f p_pos, const vec2f size, std::string texName) {
     if (Data.IndexCount >= MaxIndexCount || Data.TexSlotIndex > 31)
     {
         EndBatch();
         Flush();
         StartBatch();
     }
+
+    uint32_t texID = Vision::Manager::GetTexture(texName).GetID();
 
     vec4f color = vec4f(1.0f, 1.0f, 1.0f, 1.0f);
     float sizeOffset = 0.5f;

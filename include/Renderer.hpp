@@ -55,7 +55,7 @@ namespace Vision{
         static void Flush();
 
         void DrawQuad(const vec3f p_pos, const CubeOri ori, const vec4f color);
-        void DrawQuad(const vec3f p_pos, const CubeOri ori, uint32_t texID);
+        void DrawQuad(const vec3f p_pos, const CubeOri ori, std::string texName);
 
         void Clear(const vec3f color);
         GLFWwindow* getWindow();

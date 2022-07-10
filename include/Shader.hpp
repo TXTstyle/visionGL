@@ -1,9 +1,10 @@
 #pragma once
 
 #include <string>
-#include <unordered_map>
 
 #include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <GL/glew.h>
 
 namespace Vision {
     struct ShaderProgramSource
@@ -15,27 +16,22 @@ namespace Vision {
     class Shader
     {
     private:
-        std::string m_Filepath;
-        unsigned int m_RendererID;
-        std::unordered_map<std::string, int> m_UniformLocationCache;
+        uint32_t RenderID;
     public:
-        Shader(const std::string& filepath);
-        ~Shader();
+        Shader& Use();
+        inline uint32_t& GetID() { return RenderID; }
 
-        void Bind() const;
-        void Unbind() const;
+        void Compile(const char* vertexSrc, const char* fragSrc, const char* geoSrc = nullptr);
 
-        void SetUniform1i(const std::string& name, int value);
-        void SetUniform1iv(const std::string& name, int count, int* value);
-        void SetUniform1f(const std::string& name, float value);
-        void SetUniform4f(const std::string& name, float v0, float v1, float v2, float v3);
-        void SetUniformMat4f(const std::string& name, const glm::mat4& matrix);
+        void SetInt     (const std::string& name, int value, bool useShader = false);
+        void SetIntArray(const std::string& name, int count, int* value, bool useShader = false);
+        void SetFloat   (const std::string& name, float value, bool useShader = false);
+        void SetVec4f   (const std::string& name, glm::vec4 values, bool useShader = false);
+        void SetMat4f   (const std::string& name, const glm::mat4& matrix, bool useShader = false);
+
+        void SetIntArrayInit(const std::string& name, bool useShader = true);
     private:
-        ShaderProgramSource ParseShader(const std::string& filepath);
-        unsigned int CompileShader(uint32_t type, const std::string& source);
-        unsigned int CreateShader(const std::string& vertexShader, const std::string& fragmentShader);
-        
-        int GetUniformLocation(const std::string& name);
+        void checkErrors(uint32_t object, std::string type);
     };
 }
 

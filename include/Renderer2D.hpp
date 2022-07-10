@@ -47,7 +47,7 @@ namespace Vision2D{
         static void Flush();
 
         void DrawQuad(const vec2f p_pos, const vec2f size, const vec4f color);
-        void DrawQuad(const vec2f p_pos, const vec2f size, uint32_t texID);
+        void DrawQuad(const vec2f p_pos, const vec2f size, std::string texName);
 
         void Clear(const vec3f color);
         GLFWwindow* getWindow();

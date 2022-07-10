@@ -1,4 +1,5 @@
 #include "Renderer.hpp"
+#include "Manager.hpp"
 
 
 void GLAPIENTRY Vision::errorOccurredGL(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam) {
@@ -232,13 +233,15 @@ void Renderer::DrawQuad(const vec3f p_pos, const CubeOri ori, const vec4f color)
     
 }
 
-void Renderer::DrawQuad(const vec3f p_pos, const CubeOri ori, uint32_t texID) {
+void Renderer::DrawQuad(const vec3f p_pos, const CubeOri ori, std::string texName) {
     if (Data.IndexCount >= MaxIndexCount || Data.TexSlotIndex > 31)
     {
         EndBatch();
         Flush();
         StartBatch();
     }
+
+    uint32_t texID = Vision::Manager::GetTexture(texName).GetID();
 
     vec4f color = vec4f(1.0f, 1.0f, 1.0f, 1.0f);
     float sizeOffset = 0.5f;
