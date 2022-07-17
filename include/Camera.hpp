@@ -10,7 +10,7 @@ namespace Vision {
     private:
         const vec2i &winRes;
 
-        const vec2f camClip;
+        const glm::vec2 camClip;
         float camSpeed;
         float camFov;
         float yaw = -90.0f;
@@ -29,7 +29,7 @@ namespace Vision {
         glm::mat4 projMat;
         glm::mat4 viewMat;
     public:
-        Camera(const vec2i &p_res, const vec2f p_clip, float p_fov, float p_camSpeed);
+        Camera(const vec2i &p_res, const glm::vec2 p_clip, float p_fov, float p_camSpeed);
         ~Camera();
 
         glm::mat4& getProjMat();

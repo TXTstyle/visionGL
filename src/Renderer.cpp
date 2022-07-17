@@ -129,8 +129,6 @@ void Renderer::Flush() {
     for (uint32_t i = 0; i < Data.TexSlotIndex; i++)
         glBindTextureUnit(i, Data.TextureSlots[i]);
 
-    //std::cout << Data.IndexCount << std::endl;
-
     glBindVertexArray(Data.QuadVA);
     glDrawElements(GL_TRIANGLES, Data.IndexCount, GL_UNSIGNED_INT, nullptr);
 
@@ -145,7 +143,7 @@ void Renderer::Flush() {
     float TexID;
 */
 
-void GenOriVerts(const CubeOri ori, float sizeOffset, vec3f p_pos, vec3f *pos) {
+void GenOriVerts(const CubeOri ori, float sizeOffset, glm::vec3 p_pos, vec3f *pos) {
     switch (ori)
     {
     case CubeOri::Front:
@@ -192,7 +190,7 @@ void GenOriVerts(const CubeOri ori, float sizeOffset, vec3f p_pos, vec3f *pos) {
     }
 }
 
-void Renderer::DrawQuad(const vec3f p_pos, const CubeOri ori, const vec4f color) {
+void Renderer::DrawQuad(const glm::vec3 p_pos, const CubeOri ori, const vec4f color) {
     if (Data.IndexCount >= MaxIndexCount)
     {
         EndBatch();
@@ -233,7 +231,7 @@ void Renderer::DrawQuad(const vec3f p_pos, const CubeOri ori, const vec4f color)
     
 }
 
-void Renderer::DrawQuad(const vec3f p_pos, const CubeOri ori, std::string texName) {
+void Renderer::DrawQuad(const glm::vec3 p_pos, const CubeOri ori, std::string texName) {
     if (Data.IndexCount >= MaxIndexCount || Data.TexSlotIndex > 31)
     {
         EndBatch();
@@ -294,7 +292,7 @@ void Renderer::DrawQuad(const vec3f p_pos, const CubeOri ori, std::string texNam
     Data.IndexCount += 6;
 }
 
-void Renderer::Clear(const vec3f color) {
+void Renderer::Clear(const glm::vec3 color) {
     glClearColor(color.x, color.y, color.z, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }

@@ -33,7 +33,7 @@ void Manager::Clear() {
     for(auto i : Shaders)
         glDeleteProgram(i.second.GetID());
     for(auto i : Textures)
-        glDeleteTextures(1, (const GLuint*)i.second.GetID());
+        glDeleteTextures(1, &i.second.GetID());
 }
 
 Shader Manager::loadShaderFromFile(const char* vShaderFile, const char* fShaderFile, const char* gShaderFile) {

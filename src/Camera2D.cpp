@@ -29,7 +29,8 @@ void Camera2D::Controls(Renderer2D &renderer) {
 
     if(glfwGetKey(renderer.getWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
     {
-        exit(0);
+        glfwSetWindowShouldClose(renderer.getWindow(), GLFW_TRUE);
+        return;
     } 
 
     if(glfwGetKey(renderer.getWindow(), GLFW_KEY_LEFT_ALT) == GLFW_PRESS)

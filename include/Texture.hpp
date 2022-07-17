@@ -13,7 +13,7 @@ namespace Vision
         uint32_t filterMin, filterMax;
 
         Texture();
-        inline unsigned int GetID() const{ return renderID; }
+        inline uint32_t& GetID() { return renderID; }
 
         void Generate(uint32_t width, uint32_t height, unsigned char* data);
 

@@ -28,13 +28,11 @@ void Main3D() {
     Vision::Manager::LoadTexture("res/textures/Grass_texture.png", true, "Grass");
     Vision::Manager::GetShader("Basic").SetIntArrayInit("u_Textures");
 
-    Vision::Camera camera(WinRes, vec2f(0.1f, 500.0f), 45.0f, 3.0f);
-
-    //std::cout << texture->GetID() << std::endl;
+    Vision::Camera camera(WinRes, {0.1f, 500.0f}, 45.0f, 3.0f);
 
     while (!renderer->WindowShouldClose())
     {
-        renderer->Clear(vec3f(0.53f, 0.81f, 0.94f));
+        renderer->Clear({0.53f, 0.81f, 0.94f});
         glm::mat4 mvp = camera.getProjMat() * camera.getViewMat() * glm::mat4(1.0f);
         
         camera.Controls(*renderer);
@@ -42,12 +40,12 @@ void Main3D() {
 
         renderer->StartBatch();
 
-        renderer->DrawQuad(vec3f(0, 0, 0.5f), Vision::CubeOri::Front,   "Grass");
-        renderer->DrawQuad(vec3f(0, -0.5, 0), Vision::CubeOri::Bottom,  "Grass");
-        renderer->DrawQuad(vec3f(-0.5f, 0, 0), Vision::CubeOri::Left,   "Grass");
-        renderer->DrawQuad(vec3f(0.5f, 0, 0), Vision::CubeOri::Right,   "Grass");
-        renderer->DrawQuad(vec3f(0, 0, -0.5f), Vision::CubeOri::Back,   "Grass");
-        renderer->DrawQuad(vec3f(0, 0.5f, 0), Vision::CubeOri::Top,     "Grass");
+        renderer->DrawQuad({0, 0, 0.5f} , Vision::CubeOri::Front,   "Grass");
+        renderer->DrawQuad({0, -0.5, 0} , Vision::CubeOri::Bottom,  "Grass");
+        renderer->DrawQuad({-0.5f, 0, 0}, Vision::CubeOri::Left,   "Grass");
+        renderer->DrawQuad({0.5f, 0, 0} , Vision::CubeOri::Right,   "Grass");
+        renderer->DrawQuad({0, 0, -0.5f}, Vision::CubeOri::Back,   "Grass");
+        renderer->DrawQuad({0, 0.5f, 0} , Vision::CubeOri::Top,     "Grass");
         
         renderer->EndBatch();
 
@@ -78,7 +76,7 @@ void Main2D() {
 
     while (!renderer->WindowShouldClose())
     {
-        renderer->Clear(vec3f(0.53f, 0.81f, 0.94f));
+        renderer->Clear({0.53f, 0.81f, 0.94f});
         glm::mat4 mvp = camera.getProjMat() * camera.getViewMat() * glm::mat4(1.0f);
         
         camera.Controls(*renderer);
@@ -90,7 +88,7 @@ void Main2D() {
         {
             for (int j = -5; j < 5; j++)
             {
-                renderer->DrawQuad(vec2f(i, j), vec2f(1,1), "Grass");
+                renderer->DrawQuad({i, j}, {1,1}, "Grass");
             }
             
         }

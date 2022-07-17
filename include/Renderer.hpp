@@ -3,6 +3,7 @@
 #include <GL/glew.h>
 #include <GL/glu.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
 #include <iostream>
 #include <array>
 
@@ -54,10 +55,10 @@ namespace Vision{
         static void EndBatch();
         static void Flush();
 
-        void DrawQuad(const vec3f p_pos, const CubeOri ori, const vec4f color);
-        void DrawQuad(const vec3f p_pos, const CubeOri ori, std::string texName);
+        void DrawQuad(const glm::vec3 p_pos, const CubeOri ori, const vec4f color);
+        void DrawQuad(const glm::vec3 p_pos, const CubeOri ori, std::string texName);
 
-        void Clear(const vec3f color);
+        void Clear(const glm::vec3 color);
         GLFWwindow* getWindow();
         bool WindowShouldClose();
         void EndEvents();

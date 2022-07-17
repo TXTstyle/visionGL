@@ -137,14 +137,14 @@ void Renderer2D::Flush() {
     Data.TexSlotIndex = 1;
 }
 
-void GenVerts(const vec2f p_size, const vec2f p_pos, vec2f *pos) {
+void GenVerts(const glm::vec2 p_size, const glm::vec2 p_pos, vec2f *pos) {
     pos[0] = vec2f(p_pos.x - p_size.x, p_pos.y - p_size.y);
     pos[1] = vec2f(p_pos.x - p_size.x, p_pos.y + p_size.y);
     pos[2] = vec2f(p_pos.x + p_size.x, p_pos.y + p_size.y);
     pos[3] = vec2f(p_pos.x + p_size.x, p_pos.y - p_size.y);
 }
 
-void Renderer2D::DrawQuad(const vec2f p_pos, const vec2f size, const vec4f color) {
+void Renderer2D::DrawQuad(const glm::vec2 p_pos, const glm::vec2 size, const vec4f color) {
     if (Data.IndexCount >= MaxIndexCount)
     {
         EndBatch();
@@ -184,7 +184,7 @@ void Renderer2D::DrawQuad(const vec2f p_pos, const vec2f size, const vec4f color
     
 }
 
-void Renderer2D::DrawQuad(const vec2f p_pos, const vec2f size, std::string texName) {
+void Renderer2D::DrawQuad(const glm::vec2 p_pos, const glm::vec2 size, std::string texName) {
     if (Data.IndexCount >= MaxIndexCount || Data.TexSlotIndex > 31)
     {
         EndBatch();
@@ -245,7 +245,7 @@ void Renderer2D::DrawQuad(const vec2f p_pos, const vec2f size, std::string texNa
     Data.IndexCount += 6;
 }
 
-void Renderer2D::Clear(const vec3f color) {
+void Renderer2D::Clear(const glm::vec3 color) {
     glClearColor(color.x, color.y, color.z, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }

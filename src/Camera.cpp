@@ -8,7 +8,7 @@
 
 using namespace Vision;
 
-Camera::Camera(const vec2i &p_res, const vec2f p_clip, float p_fov, float p_camSpeed)
+Camera::Camera(const vec2i &p_res, const glm::vec2 p_clip, float p_fov, float p_camSpeed)
 : winRes(p_res), camClip(p_clip), camSpeed(p_camSpeed),  camFov(p_fov) {
     projMat = glm::perspective(glm::radians(camFov), ((float)winRes.x/winRes.y), camClip.x, camClip.y);
     viewMat = glm::lookAt(camPos, glm::vec3(0.0f), camUp);
@@ -54,7 +54,8 @@ void Camera::Controls(Renderer &renderer) {
 
     if(glfwGetKey(renderer.getWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
     {
-        exit(0);
+        glfwSetWindowShouldClose(renderer.getWindow(), GLFW_TRUE);
+        return;
     } 
 
     if(glfwGetKey(renderer.getWindow(), GLFW_KEY_LEFT_ALT) == GLFW_PRESS)
