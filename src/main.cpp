@@ -82,11 +82,13 @@ void Main2D() {
 
         Vision2D::Renderer2D::StartBatch();
 
-        for (int i = 0; i < 10; i++)
+        float rot = glfwGetTime()*75;
+
+        for (int i = 0; i < 5; i++)
         {
-            for (int j = 0; j < 10; j++)
+            for (int j = 0; j < 5; j++)
             {
-                Vision2D::Renderer2D::DrawQuad({i*64+64, j*64+64}, {32,32}, "Grass");
+                Vision2D::Renderer2D::DrawQuad({i*32+90, j*32+90}, {32,32}, rot, "Grass");
             }
             
         }

@@ -117,12 +117,12 @@ struct Vertex {
 };
 
 struct Vertex2D {
-    vec2f Pos;
-    vec2f TexCoord;
-    vec4f Color;
+    glm::vec4 Pos;
+    glm::vec2 TexCoord;
+    glm::vec4 Color;
     float TexID;
 
-    Vertex2D(vec2f p_pos, vec2f p_texCoord, vec4f p_color, float p_texID)
+    Vertex2D(glm::vec4 p_pos, glm::vec2 p_texCoord, glm::vec4 p_color, float p_texID)
     : Pos(p_pos), TexCoord(p_texCoord), Color(p_color), TexID(p_texID) {}
     Vertex2D() {}
 };

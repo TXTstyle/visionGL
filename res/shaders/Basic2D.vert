@@ -1,6 +1,6 @@
 #version 410 core
 
-layout(location = 0) in vec2 position;
+layout(location = 0) in vec4 position;
 layout(location = 1) in vec2 texCoord;
 layout(location = 2) in vec4 color;
 layout(location = 3) in float texID;
@@ -15,5 +15,5 @@ void main() {
     v_Color = color;
     v_TexCoord = texCoord;
     v_TexID = texID;
-    gl_Position =  u_MVP * vec4(position, 1, 1);
+    gl_Position =  u_MVP * position;
 }
