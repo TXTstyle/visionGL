@@ -21,7 +21,7 @@ Camera::~Camera() {
 float scroll = 1;
 double mouseX, mouseY;
 
-void Camera::Controls(Renderer &renderer) {
+void Camera::Controls() {
 
     if (firstMouse) // initially set to true
     {
@@ -52,13 +52,13 @@ void Camera::Controls(Renderer &renderer) {
     direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
     camFront = glm::normalize(direction);
 
-    if(glfwGetKey(renderer.getWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
+    if(glfwGetKey(Renderer::window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     {
-        glfwSetWindowShouldClose(renderer.getWindow(), GLFW_TRUE);
+        glfwSetWindowShouldClose(Renderer::window, GLFW_TRUE);
         return;
     } 
 
-    if(glfwGetKey(renderer.getWindow(), GLFW_KEY_LEFT_ALT) == GLFW_PRESS)
+    if(glfwGetKey(Renderer::window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS)
     {
         glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
     } else { glPolygonMode( GL_FRONT_AND_BACK, GL_FILL ); }
@@ -68,22 +68,22 @@ void Camera::Controls(Renderer &renderer) {
     lastFrame = currentFrame;
 
     float speed = deltaTime * camSpeed;
-    if(glfwGetKey(renderer.getWindow(), GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
+    if(glfwGetKey(Renderer::window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
         speed *= 3.0f;
-    } else if(glfwGetKey(renderer.getWindow(), GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
+    } else if(glfwGetKey(Renderer::window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
         speed *= 0.5f;
     } else { speed = deltaTime * camSpeed; }
     
-    if(glfwGetKey(renderer.getWindow(), GLFW_KEY_W) == GLFW_PRESS) {
+    if(glfwGetKey(Renderer::window, GLFW_KEY_W) == GLFW_PRESS) {
         camPos += speed * camFront;
     }
-    if(glfwGetKey(renderer.getWindow(), GLFW_KEY_S) == GLFW_PRESS) {
+    if(glfwGetKey(Renderer::window, GLFW_KEY_S) == GLFW_PRESS) {
         camPos -= speed * camFront;
     }
-    if(glfwGetKey(renderer.getWindow(), GLFW_KEY_A) == GLFW_PRESS) {
+    if(glfwGetKey(Renderer::window, GLFW_KEY_A) == GLFW_PRESS) {
         camPos -= glm::normalize(glm::cross(camFront, camUp)) * speed;
     }
-    if(glfwGetKey(renderer.getWindow(), GLFW_KEY_D) == GLFW_PRESS) {
+    if(glfwGetKey(Renderer::window, GLFW_KEY_D) == GLFW_PRESS) {
         camPos += glm::normalize(glm::cross(camFront, camUp)) * speed;
     }
     

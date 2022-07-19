@@ -43,6 +43,7 @@ struct vec2i
 
     vec2i(int p_x, int p_y)
     : x(p_x), y(p_y) {}
+    vec2i() {}
 };
 
 struct vec3u

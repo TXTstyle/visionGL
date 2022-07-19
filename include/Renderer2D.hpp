@@ -35,10 +35,10 @@ namespace Vision2D{
 
     class Renderer2D {
     private:
-        GLFWwindow* window;
-        const vec2i& windowSize;
+        Renderer2D();
     public:
-        Renderer2D(const vec2i& p_windowSize, const std::string windowName);
+        static GLFWwindow* window;
+        static vec2i windowSize;
 
         static void Init();
         static void Shutdown();
@@ -47,13 +47,12 @@ namespace Vision2D{
         static void EndBatch();
         static void Flush();
 
-        void DrawQuad(const glm::vec2 p_pos, const glm::vec2 size, const vec4f color);
-        void DrawQuad(const glm::vec2 p_pos, const glm::vec2 size, std::string texName);
+        static void DrawQuad(const glm::vec2 p_pos, const glm::vec2 size, const vec4f color);
+        static void DrawQuad(const glm::vec2 p_pos, const glm::vec2 size, std::string texName);
 
-        void Clear(const glm::vec3 color);
-        GLFWwindow* getWindow();
-        bool WindowShouldClose();
-        void EndEvents();
-        void InitEnable();
+        static void Clear(const glm::vec3 color);
+        static bool WindowShouldClose();
+        static void EndEvents();
+        static void InitEnable(const vec2i& p_windowSize, const std::string windowName);
     };
 }

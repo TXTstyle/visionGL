@@ -19,34 +19,12 @@ static const size_t MaxQuadCount = 1000;
 static const size_t MaxVertexCount = MaxQuadCount * 4;
 static const size_t MaxIndexCount = MaxQuadCount * 6;
 
-Renderer2D::Renderer2D(const vec2i& p_windowSize, const std::string windowName)
-: windowSize(p_windowSize) {
-    /* Initialize the library */
-    if (!glfwInit())
-        exit(-1);
-    
-    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
-
-    /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(windowSize.x, windowSize.y, windowName.c_str(), NULL, NULL);
-    if (!window)
-    {
-        glfwTerminate();
-        exit(-1);
-    }
-
-    /* Make the window's context current */
-    glfwMakeContextCurrent(window);
-
-    glfwSwapInterval(1);
-
-    if (glewInit() != GLEW_OK)
-        throw std::runtime_error("GLEW not OK!");
-
-    std::cout << glGetString(GL_VERSION) << std::endl;
+Renderer2D::Renderer2D() {
 }
 
 static RendererData Data;
+GLFWwindow* Renderer2D::window;
+vec2i Renderer2D::windowSize;
 
 void Renderer2D::Init() {
     Data.QuadBuffer = new Vertex2D[MaxVertexCount];
@@ -250,10 +228,6 @@ void Renderer2D::Clear(const glm::vec3 color) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-GLFWwindow* Renderer2D::getWindow() {
-    return window;
-}
-
 bool Renderer2D::WindowShouldClose() {
     return (bool)glfwWindowShouldClose(window);
 }
@@ -266,7 +240,33 @@ void Renderer2D::EndEvents() {
 void scrollCallback2D(GLFWwindow* window, double xoffset, double yoffset);
 void mouseCallback2D(GLFWwindow* window, double xpos, double ypos);
 
-void Renderer2D::InitEnable() {
+void Renderer2D::InitEnable(const vec2i& p_windowSize, const std::string windowName) {
+    windowSize = p_windowSize;
+    /* Initialize the library */
+    if (!glfwInit())
+        exit(-1);
+    
+    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+
+    /* Create a windowed mode window and its OpenGL context */
+    window = glfwCreateWindow(windowSize.x, windowSize.y, windowName.c_str(), NULL, NULL);
+    if (!window)
+    {
+        glfwTerminate();
+        exit(-1);
+    }
+
+    /* Make the window's context current */
+    glfwMakeContextCurrent(window);
+
+    glfwSwapInterval(1);
+
+    if (glewInit() != GLEW_OK)
+        throw std::runtime_error("GLEW not OK!");
+
+    std::cout << glGetString(GL_VERSION) << std::endl;
+
+
     glEnable(GL_DEBUG_OUTPUT);
     glDebugMessageCallback(errorOccurredGL, NULL);
     

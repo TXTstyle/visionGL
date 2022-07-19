@@ -20,9 +20,8 @@
 
 void Main3D() {
     vec2i WinRes(1280, 720);
-    std::unique_ptr<Vision::Renderer> renderer = std::make_unique<Vision::Renderer>(WinRes, "VisionGL");
-    renderer->InitEnable();
-    renderer->Init();
+    Vision::Renderer::InitEnable(WinRes, "VisionGL");
+    Vision::Renderer::Init();
 
     Vision::Manager::LoadShader("res/shaders/Basic.vert", "res/shaders/Basic.frag", nullptr, "Basic");
     Vision::Manager::LoadTexture("res/textures/Grass_texture.png", true, "Grass");
@@ -30,42 +29,41 @@ void Main3D() {
 
     Vision::Camera camera(WinRes, {0.1f, 500.0f}, 45.0f, 3.0f);
 
-    while (!renderer->WindowShouldClose())
+    while (!Vision::Renderer::WindowShouldClose())
     {
-        renderer->Clear({0.53f, 0.81f, 0.94f});
+        Vision::Renderer::Clear({0.53f, 0.81f, 0.94f});
         glm::mat4 mvp = camera.getProjMat() * camera.getViewMat() * glm::mat4(1.0f);
         
-        camera.Controls(*renderer);
+        camera.Controls();
         Vision::Manager::GetShader("Basic").SetMat4f("u_MVP", mvp);
 
-        renderer->StartBatch();
+        Vision::Renderer::StartBatch();
 
-        renderer->DrawQuad({0, 0, 0.5f} , Vision::CubeOri::Front,   "Grass");
-        renderer->DrawQuad({0, -0.5, 0} , Vision::CubeOri::Bottom,  "Grass");
-        renderer->DrawQuad({-0.5f, 0, 0}, Vision::CubeOri::Left,   "Grass");
-        renderer->DrawQuad({0.5f, 0, 0} , Vision::CubeOri::Right,   "Grass");
-        renderer->DrawQuad({0, 0, -0.5f}, Vision::CubeOri::Back,   "Grass");
-        renderer->DrawQuad({0, 0.5f, 0} , Vision::CubeOri::Top,     "Grass");
+        Vision::Renderer::DrawQuad({0, 0, 0.5f} , Vision::CubeOri::Front,   "Grass");
+        Vision::Renderer::DrawQuad({0, -0.5, 0} , Vision::CubeOri::Bottom,  "Grass");
+        Vision::Renderer::DrawQuad({-0.5f, 0, 0}, Vision::CubeOri::Left,   "Grass");
+        Vision::Renderer::DrawQuad({0.5f, 0, 0} , Vision::CubeOri::Right,   "Grass");
+        Vision::Renderer::DrawQuad({0, 0, -0.5f}, Vision::CubeOri::Back,   "Grass");
+        Vision::Renderer::DrawQuad({0, 0.5f, 0} , Vision::CubeOri::Top,     "Grass");
         
-        renderer->EndBatch();
+        Vision::Renderer::EndBatch();
 
 
-        renderer->Flush();
+        Vision::Renderer::Flush();
         
-        renderer->EndEvents();
+        Vision::Renderer::EndEvents();
     }
     
     Vision::Manager::Clear();
-    renderer->Shutdown();
+    Vision::Renderer::Shutdown();
 }
 
 void Main2D() {
     vec2i WinRes(1280, 720);
-    std::unique_ptr<Vision2D::Renderer2D> renderer = std::make_unique<Vision2D::Renderer2D>(WinRes, "VisionGL");
-    renderer->InitEnable();
+    Vision2D::Renderer2D::InitEnable(WinRes, "VisionGL");
     
 
-    renderer->Init();
+    Vision2D::Renderer2D::Init();
     Vision::Manager::LoadShader("res/shaders/Basic2D.vert", "res/shaders/Basic2D.frag", nullptr, "Basic2D");
 
     Vision::Manager::LoadTexture("res/textures/Grass_texture.png", true, "Grass");
@@ -74,36 +72,34 @@ void Main2D() {
     Vision2D::Camera2D camera(WinRes, 1.0f, 12.0f);
 
 
-    while (!renderer->WindowShouldClose())
+    while (!Vision2D::Renderer2D::WindowShouldClose())
     {
-        renderer->Clear({0.53f, 0.81f, 0.94f});
+        Vision2D::Renderer2D::Clear({0.53f, 0.81f, 0.94f});
         glm::mat4 mvp = camera.getProjMat() * camera.getViewMat() * glm::mat4(1.0f);
         
-        camera.Controls(*renderer);
+        camera.Controls();
         Vision::Manager::GetShader("Basic2D").SetMat4f("u_MVP", mvp, true);
 
-        renderer->StartBatch();
+        Vision2D::Renderer2D::StartBatch();
 
-        for (int i = -5; i < 5; i++)
+        for (int i = 0; i < 10; i++)
         {
-            for (int j = -5; j < 5; j++)
+            for (int j = 0; j < 10; j++)
             {
-                renderer->DrawQuad({i, j}, {1,1}, "Grass");
+                Vision2D::Renderer2D::DrawQuad({i*64+64, j*64+64}, {32,32}, "Grass");
             }
             
         }
-        
-        
-        renderer->EndBatch();
 
+        Vision2D::Renderer2D::EndBatch();
 
-        renderer->Flush();
+        Vision2D::Renderer2D::Flush();
         
-        renderer->EndEvents();
+        Vision2D::Renderer2D::EndEvents();
     }
     
     Vision::Manager::Clear();
-    renderer->Shutdown();
+    Vision2D::Renderer2D::Shutdown();
 }
 
 int main(int argc, char const *argv[])

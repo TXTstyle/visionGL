@@ -10,9 +10,7 @@ using namespace Vision2D;
 
 Camera2D::Camera2D(const vec2i &p_res, float p_zoom, float p_camSpeed)
 : winRes(p_res), camSpeed(p_camSpeed),  camZoom(p_zoom) {
-    float asp = (float)winRes.x/winRes.y;
-    float y = 10.0f;
-    projMat = glm::ortho(-(y*asp), y*asp, -y, y);
+    projMat = glm::ortho(0.0f, (float)winRes.x, 0.0f, (float)winRes.y);
     viewMat = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f));
 }
 
@@ -23,17 +21,17 @@ Camera2D::~Camera2D() {
 float scroll2D = 1;
 double mouseX2D, mouseY2D;
 
-void Camera2D::Controls(Renderer2D &renderer) {
+void Camera2D::Controls() {
 
     glm::vec3 direction;
 
-    if(glfwGetKey(renderer.getWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
+    if(glfwGetKey(Vision2D::Renderer2D::window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     {
-        glfwSetWindowShouldClose(renderer.getWindow(), GLFW_TRUE);
+        glfwSetWindowShouldClose(Vision2D::Renderer2D::window, GLFW_TRUE);
         return;
     } 
 
-    if(glfwGetKey(renderer.getWindow(), GLFW_KEY_LEFT_ALT) == GLFW_PRESS)
+    if(glfwGetKey(Vision2D::Renderer2D::window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS)
     {
         glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
     } else { glPolygonMode( GL_FRONT_AND_BACK, GL_FILL ); }
@@ -43,22 +41,22 @@ void Camera2D::Controls(Renderer2D &renderer) {
     lastFrame = currentFrame;
 
     float speed = deltaTime * camSpeed;
-    if(glfwGetKey(renderer.getWindow(), GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
+    if(glfwGetKey(Vision2D::Renderer2D::window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
         speed *= 3.0f;
-    } else if(glfwGetKey(renderer.getWindow(), GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
+    } else if(glfwGetKey(Vision2D::Renderer2D::window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
         speed *= 0.5f;
     } else { speed = deltaTime * camSpeed; }
     
-    if(glfwGetKey(renderer.getWindow(), GLFW_KEY_W) == GLFW_PRESS) {
+    if(glfwGetKey(Vision2D::Renderer2D::window, GLFW_KEY_W) == GLFW_PRESS) {
         camPos -= speed * glm::vec3(0,1,0);
     }
-    if(glfwGetKey(renderer.getWindow(), GLFW_KEY_S) == GLFW_PRESS) {
+    if(glfwGetKey(Vision2D::Renderer2D::window, GLFW_KEY_S) == GLFW_PRESS) {
         camPos += speed * glm::vec3(0,1,0);
     }
-    if(glfwGetKey(renderer.getWindow(), GLFW_KEY_A) == GLFW_PRESS) {
+    if(glfwGetKey(Vision2D::Renderer2D::window, GLFW_KEY_A) == GLFW_PRESS) {
         camPos += speed * glm::vec3(1,0,0);
     }
-    if(glfwGetKey(renderer.getWindow(), GLFW_KEY_D) == GLFW_PRESS) {
+    if(glfwGetKey(Vision2D::Renderer2D::window, GLFW_KEY_D) == GLFW_PRESS) {
         camPos -= speed * glm::vec3(1,0,0);
     }
     

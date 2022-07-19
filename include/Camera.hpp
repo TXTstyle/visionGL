@@ -35,6 +35,6 @@ namespace Vision {
         glm::mat4& getProjMat();
         glm::mat4& getViewMat();
 
-        void Controls(Renderer &renderer);
+        void Controls();
     };
 }

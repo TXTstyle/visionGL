@@ -27,6 +27,6 @@ namespace Vision2D {
         glm::mat4& getProjMat();
         glm::mat4& getViewMat();
 
-        void Controls(Renderer2D &renderer);
+        void Controls();
     };
 }
