@@ -49,6 +49,7 @@ namespace Vision2D{
 
         static void DrawQuad(const glm::vec2 p_pos, const glm::vec2 size, const float rot, const glm::vec4 color);
         static void DrawQuad(const glm::vec2 p_pos, const glm::vec2 size, const float rot, std::string texName);
+        static void DrawQuad(const glm::vec2 p_pos, const glm::vec2 size, const float rot, const glm::vec2 tilePos, std::string texName);
 
         static void Clear(const glm::vec3 color);
         static bool WindowShouldClose();

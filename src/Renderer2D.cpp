@@ -119,17 +119,16 @@ void GenVerts(const glm::vec2 p_size, const float rot, const glm::vec2 p_pos, gl
     glm::mat4 model(1.0f);
     model = glm::translate(model, {-p_size.x/2, -p_size.y/2.0f, 0});
     pos[0] = model * glm::vec4(0, 0, 1.0f, 1.0f);
-    pos[1] = model * glm::vec4(0, p_size.y, 1.0f, 1.0f);
+    pos[1] = model * glm::vec4(p_size.x, 0, 1.0f, 1.0f);
     pos[2] = model * glm::vec4(p_size.x, p_size.y, 1.0f, 1.0f);
-    pos[3] = model * glm::vec4(p_size.x, 0, 1.0f, 1.0f);
+    pos[3] = model * glm::vec4(0, p_size.y, 1.0f, 1.0f);
     model = glm::rotate(model, glm::radians(-rot), {0.0f, 0.0f, 1.0f});
     pos[0] = model * pos[0];
     pos[1] = model * pos[1];
     pos[2] = model * pos[2];
     pos[3] = model * pos[3];
 
-    model = glm::mat4(1.0f);
-    model = glm::translate(model, {p_pos.x, p_pos.y, 0});
+    model = glm::translate(glm::mat4(1.0f), {p_pos.x, p_pos.y, 0});
     pos[0] = model * pos[0];
     pos[1] = model * pos[1];
     pos[2] = model * pos[2];
@@ -244,6 +243,69 @@ void Renderer2D::DrawQuad(const glm::vec2 p_pos, const glm::vec2 size, const flo
     Data.IndexCount += 6;
 }
 
+void Renderer2D::DrawQuad(const glm::vec2 p_pos, const glm::vec2 size, const float rot, const glm::vec2 tilePos, std::string texName) {
+    if (Data.IndexCount >= MaxIndexCount || Data.TexSlotIndex > 31)
+    {
+        EndBatch();
+        Flush();
+        StartBatch();
+    }
+
+    uint32_t texID = Vision::Manager::GetTileMap(texName).GetID();
+    float texSize = Vision::Manager::GetTileMap(texName).GetTile();
+    glm::vec2 texPos(tilePos.x*texSize, tilePos.y*texSize);
+
+    glm::vec4 color(1.0f);
+    float sizeOffset = 0.5f;
+    glm::vec4 pos[4];
+    GenVerts(size, rot, p_pos, pos);
+
+    float textureIndex = 0.0f;
+    for (uint32_t i = 0; i < Data.TexSlotIndex; i++)
+    {
+        if (Data.TextureSlots[i] == texID)
+        {
+            textureIndex = (float)i;
+            break;
+        }
+        
+    }
+    
+    if (textureIndex == 0.0f)
+    {
+        textureIndex = (float)Data.TexSlotIndex;
+        Data.TextureSlots[Data.TexSlotIndex] = texID;
+        Data.TexSlotIndex++;
+    }
+    
+
+    Data.QuadBufferPtr->Pos = pos[0];
+    Data.QuadBufferPtr->TexCoord = texPos;
+    Data.QuadBufferPtr->Color = color;
+    Data.QuadBufferPtr->TexID = textureIndex;
+    Data.QuadBufferPtr++;
+
+    Data.QuadBufferPtr->Pos = pos[1];
+    Data.QuadBufferPtr->TexCoord = texPos + glm::vec2(texSize, 0.0f);
+    Data.QuadBufferPtr->Color = color;
+    Data.QuadBufferPtr->TexID = textureIndex;
+    Data.QuadBufferPtr++;
+
+    Data.QuadBufferPtr->Pos = pos[2];
+    Data.QuadBufferPtr->TexCoord = texPos + glm::vec2(texSize);
+    Data.QuadBufferPtr->Color = color;
+    Data.QuadBufferPtr->TexID = textureIndex;
+    Data.QuadBufferPtr++;
+
+    Data.QuadBufferPtr->Pos = pos[3];
+    Data.QuadBufferPtr->TexCoord = texPos + glm::vec2(0.0f, texSize);
+    Data.QuadBufferPtr->Color = color;
+    Data.QuadBufferPtr->TexID = textureIndex;
+    Data.QuadBufferPtr++;
+
+    Data.IndexCount += 6;
+}
+
 void Renderer2D::Clear(const glm::vec3 color) {
     glClearColor(color.x, color.y, color.z, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -298,7 +360,7 @@ void Renderer2D::InitEnable(const vec2i& p_windowSize, const std::string windowN
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); 
 
     glEnable(GL_CULL_FACE);
-    glCullFace(GL_FRONT); 
+    glCullFace(GL_BACK); 
 
     glfwSetScrollCallback(window, scrollCallback2D);
     glfwSetCursorPosCallback(window, mouseCallback2D);

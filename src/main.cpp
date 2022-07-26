@@ -25,6 +25,7 @@ void Main3D() {
 
     Vision::Manager::LoadShader("res/shaders/Basic.vert", "res/shaders/Basic.frag", nullptr, "Basic");
     Vision::Manager::LoadTexture("res/textures/Grass_texture.png", true, "Grass");
+    Vision::Manager::LoadTileMap("res/textures/TileMapTest.png", false, 2, "TileMap");
     Vision::Manager::GetShader("Basic").SetIntArrayInit("u_Textures");
 
     Vision::Camera camera(WinRes, {0.1f, 500.0f}, 45.0f, 3.0f);
@@ -39,12 +40,14 @@ void Main3D() {
 
         Vision::Renderer::StartBatch();
 
-        Vision::Renderer::DrawQuad({0, 0, 0.5f} , Vision::CubeOri::Front,   "Grass");
-        Vision::Renderer::DrawQuad({0, -0.5, 0} , Vision::CubeOri::Bottom,  "Grass");
-        Vision::Renderer::DrawQuad({-0.5f, 0, 0}, Vision::CubeOri::Left,   "Grass");
-        Vision::Renderer::DrawQuad({0.5f, 0, 0} , Vision::CubeOri::Right,   "Grass");
-        Vision::Renderer::DrawQuad({0, 0, -0.5f}, Vision::CubeOri::Back,   "Grass");
-        Vision::Renderer::DrawQuad({0, 0.5f, 0} , Vision::CubeOri::Top,     "Grass");
+        Vision::Renderer::DrawQuad({0, 0, 0.5f} , {0,0,0}, {1, 1},  "Grass");
+        Vision::Renderer::DrawQuad({0, -0.5f, 0} , {90,0,0}, {1, 1},  "Grass");
+        Vision::Renderer::DrawQuad({-0.5f, 0, 0}, {0,-90,0}, {1, 1},  "Grass");
+        Vision::Renderer::DrawQuad({0.5f, 0, 0} , {0,90,0}, {1, 1}, "Grass");
+        Vision::Renderer::DrawQuad({0, 0, -0.5f}, {0,180,0}, {1, 1}, "Grass");
+        Vision::Renderer::DrawQuad({0, 0.5f, 0} , {-90,0,0}, {1, 1}, "Grass");
+
+        Vision::Renderer::DrawQuad({0.0f, 2.0f, 0.5f}, {5,0,0}, {5,3}, {0,0}, "TileMap");
         
         Vision::Renderer::EndBatch();
 
@@ -65,9 +68,12 @@ void Main2D() {
 
     Vision2D::Renderer2D::Init();
     Vision::Manager::LoadShader("res/shaders/Basic2D.vert", "res/shaders/Basic2D.frag", nullptr, "Basic2D");
+    Vision::Manager::LoadShader("res/shaders/Basic2D.vert", "res/shaders/TexCoord2D.frag", nullptr, "TexCoord2D");
 
     Vision::Manager::LoadTexture("res/textures/Grass_texture.png", true, "Grass");
+    Vision::Manager::LoadTileMap("res/textures/TileMapTest.png", false, 2, "TileMap");
     Vision::Manager::GetShader("Basic2D").SetIntArrayInit("u_Textures");
+    Vision::Manager::GetShader("TexCoord2D").SetIntArrayInit("u_Textures");
 
     Vision2D::Camera2D camera(WinRes, 1.0f, 12.0f);
 
@@ -81,7 +87,7 @@ void Main2D() {
         Vision::Manager::GetShader("Basic2D").SetMat4f("u_MVP", mvp, true);
 
         Vision2D::Renderer2D::StartBatch();
-
+        
         float rot = glfwGetTime()*75;
 
         for (int i = 0; i < 5; i++)
@@ -92,6 +98,13 @@ void Main2D() {
             }
             
         }
+        
+        Vision2D::Renderer2D::DrawQuad({250, 250}, {32, 32}, 10, {0,0}, "TileMap");
+        Vision2D::Renderer2D::DrawQuad({290, 250}, {32, 32}, 85, {0,1}, "TileMap");
+        Vision2D::Renderer2D::DrawQuad({290, 290}, {32, 32}, 100, {1,0}, "TileMap");
+        Vision2D::Renderer2D::DrawQuad({250, 290}, {32, 32}, 230, {1,1}, "TileMap");
+        
+        //Vision2D::Renderer2D::DrawQuad({500, 500}, {256, 256}, 0, {0,0}, "TileMap");
 
         Vision2D::Renderer2D::EndBatch();
 
@@ -106,6 +119,7 @@ void Main2D() {
 
 int main(int argc, char const *argv[])
 {
+    0 ? Main3D() : Main2D();
     //Main3D();
     //Main2D();
     return 0;

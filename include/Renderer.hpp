@@ -14,14 +14,6 @@ namespace Vision{
     void GLAPIENTRY errorOccurredGL(GLenum source, GLenum type, GLuint id, GLenum severity,
                                 GLsizei length, const GLchar* message, const void* userParam);
 
-    enum CubeOri {
-        Front,
-        Bottom,
-        Left,
-        Right,
-        Back,
-        Top
-    };
 
     struct RendererData
     {
@@ -55,8 +47,9 @@ namespace Vision{
         static void EndBatch();
         static void Flush();
 
-        static void DrawQuad(const glm::vec3 p_pos, const CubeOri ori, const vec4f color);
-        static void DrawQuad(const glm::vec3 p_pos, const CubeOri ori, std::string texName);
+        static void DrawQuad(const glm::vec3 p_pos, const glm::vec3 rot, const glm::vec2 size, const glm::vec4 color);
+        static void DrawQuad(const glm::vec3 p_pos, const glm::vec3 rot, const glm::vec2 size, std::string texName);
+        static void DrawQuad(const glm::vec3 p_pos, const glm::vec3 rot, const glm::vec2 size, const glm::vec2 tilePos, std::string texName);
 
         static void Clear(const glm::vec3 color);
         static bool WindowShouldClose();

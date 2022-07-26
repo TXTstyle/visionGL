@@ -36,7 +36,7 @@ void Renderer::Init() {
     glBufferData(GL_ARRAY_BUFFER, MaxVertexCount * sizeof(Vertex), nullptr, GL_DYNAMIC_DRAW);
 
     glEnableVertexArrayAttrib(Data.QuadVA, 0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, Pos));
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, Pos));
     
     glEnableVertexArrayAttrib(Data.QuadVA, 1);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, TexCoord));
@@ -115,60 +115,31 @@ void Renderer::Flush() {
 }
 
 /*
-    vec3f Pos;
-    vec2f TexCoord;
-    vec4f Color;
-    float TexID;
+    4 Pos;
+    2 TexCoord;
+    4 Color;
+    1 TexID;
 */
 
-void GenOriVerts(const CubeOri ori, float sizeOffset, glm::vec3 p_pos, vec3f *pos) {
-    switch (ori)
-    {
-    case CubeOri::Front:
-        pos[0] = vec3f(p_pos.x - sizeOffset, p_pos.y - sizeOffset, p_pos.z);
-        pos[1] = vec3f(p_pos.x - sizeOffset, p_pos.y + sizeOffset, p_pos.z);
-        pos[2] = vec3f(p_pos.x + sizeOffset, p_pos.y + sizeOffset, p_pos.z);
-        pos[3] = vec3f(p_pos.x + sizeOffset, p_pos.y - sizeOffset, p_pos.z);
-        break;
-    
-    case CubeOri::Bottom:
-        pos[0] = vec3f(p_pos.x - sizeOffset, p_pos.y, p_pos.z - sizeOffset);
-        pos[1] = vec3f(p_pos.x - sizeOffset, p_pos.y, p_pos.z + sizeOffset);
-        pos[2] = vec3f(p_pos.x + sizeOffset, p_pos.y, p_pos.z + sizeOffset);
-        pos[3] = vec3f(p_pos.x + sizeOffset, p_pos.y, p_pos.z - sizeOffset);
-        break;
-    
-    case CubeOri::Left:
-        pos[0] = vec3f(p_pos.x, p_pos.y - sizeOffset, p_pos.z - sizeOffset);
-        pos[1] = vec3f(p_pos.x, p_pos.y + sizeOffset, p_pos.z - sizeOffset);
-        pos[2] = vec3f(p_pos.x, p_pos.y + sizeOffset, p_pos.z + sizeOffset);
-        pos[3] = vec3f(p_pos.x, p_pos.y - sizeOffset, p_pos.z + sizeOffset);
-        break;
+void GenOriVerts(const glm::vec3 rot, glm::vec2 sizeOffset, glm::vec3 p_pos, glm::vec4 *pos) {
+    glm::mat4 model(1.0f);
+    model = glm::rotate(model, glm::radians(rot.x), {1.0f, 0, 0});
+    model = glm::rotate(model, glm::radians(rot.y), {0, 1.0f, 0});
+    model = glm::rotate(model, glm::radians(rot.z), {0, 0, 1.0f});
 
-    case CubeOri::Right:
-        pos[0] = vec3f(p_pos.x, p_pos.y - sizeOffset, p_pos.z + sizeOffset);
-        pos[1] = vec3f(p_pos.x, p_pos.y + sizeOffset, p_pos.z + sizeOffset);
-        pos[2] = vec3f(p_pos.x, p_pos.y + sizeOffset, p_pos.z - sizeOffset);
-        pos[3] = vec3f(p_pos.x, p_pos.y - sizeOffset, p_pos.z - sizeOffset);
-        break;
+    pos[0] = model * glm::vec4(-sizeOffset.x, -sizeOffset.y, 0.0f, 1.0f);
+    pos[1] = model * glm::vec4( sizeOffset.x, -sizeOffset.y, 0.0f, 1.0f);
+    pos[2] = model * glm::vec4( sizeOffset.x,  sizeOffset.y, 0.0f, 1.0f);
+    pos[3] = model * glm::vec4(-sizeOffset.x,  sizeOffset.y, 0.0f, 1.0f);
 
-    case CubeOri::Back:
-        pos[0] = vec3f(p_pos.x + sizeOffset, p_pos.y - sizeOffset, p_pos.z);
-        pos[1] = vec3f(p_pos.x + sizeOffset, p_pos.y + sizeOffset, p_pos.z);
-        pos[2] = vec3f(p_pos.x - sizeOffset, p_pos.y + sizeOffset, p_pos.z);
-        pos[3] = vec3f(p_pos.x - sizeOffset, p_pos.y - sizeOffset, p_pos.z);
-        break;
-
-    case CubeOri::Top:
-        pos[0] = vec3f(p_pos.x - sizeOffset, p_pos.y, p_pos.z + sizeOffset);
-        pos[1] = vec3f(p_pos.x - sizeOffset, p_pos.y, p_pos.z - sizeOffset);
-        pos[2] = vec3f(p_pos.x + sizeOffset, p_pos.y, p_pos.z - sizeOffset);
-        pos[3] = vec3f(p_pos.x + sizeOffset, p_pos.y, p_pos.z + sizeOffset);
-        break;
-    }
+    model = glm::translate(glm::mat4(1.0f), p_pos);
+    pos[0] = model * pos[0];
+    pos[1] = model * pos[1];
+    pos[2] = model * pos[2];
+    pos[3] = model * pos[3];
 }
 
-void Renderer::DrawQuad(const glm::vec3 p_pos, const CubeOri ori, const vec4f color) {
+void Renderer::DrawQuad(const glm::vec3 p_pos, const glm::vec3 rot, const glm::vec2 size, const glm::vec4 color) {
     if (Data.IndexCount >= MaxIndexCount)
     {
         EndBatch();
@@ -177,30 +148,30 @@ void Renderer::DrawQuad(const glm::vec3 p_pos, const CubeOri ori, const vec4f co
     }
 
     float textureIndex = 0.0f;
-    float sizeOffset = 0.5f;
-    vec3f pos[4];
-    GenOriVerts(ori, sizeOffset, p_pos, pos);
+    glm::vec2 sizeOffset = size/2.0f;
+    glm::vec4 pos[4];
+    GenOriVerts(rot, sizeOffset, p_pos, pos);
 
     Data.QuadBufferPtr->Pos = pos[0];
-    Data.QuadBufferPtr->TexCoord = vec2f(0.0f, 0.0f);
+    Data.QuadBufferPtr->TexCoord = glm::vec2(0.0f, 0.0f);
     Data.QuadBufferPtr->Color = color;
     Data.QuadBufferPtr->TexID = textureIndex;
     Data.QuadBufferPtr++;
 
     Data.QuadBufferPtr->Pos = pos[1];
-    Data.QuadBufferPtr->TexCoord = vec2f(1.0f, 0.0f);
+    Data.QuadBufferPtr->TexCoord = glm::vec2(1.0f, 0.0f);
     Data.QuadBufferPtr->Color = color;
     Data.QuadBufferPtr->TexID = textureIndex;
     Data.QuadBufferPtr++;
 
     Data.QuadBufferPtr->Pos = pos[2];
-    Data.QuadBufferPtr->TexCoord = vec2f(1.0f, 1.0f);
+    Data.QuadBufferPtr->TexCoord = glm::vec2(1.0f, 1.0f);
     Data.QuadBufferPtr->Color = color;
     Data.QuadBufferPtr->TexID = textureIndex;
     Data.QuadBufferPtr++;
 
     Data.QuadBufferPtr->Pos = pos[3];
-    Data.QuadBufferPtr->TexCoord = vec2f(0.0f, 1.0f);
+    Data.QuadBufferPtr->TexCoord = glm::vec2(0.0f, 1.0f);
     Data.QuadBufferPtr->Color = color;
     Data.QuadBufferPtr->TexID = textureIndex;
     Data.QuadBufferPtr++;
@@ -209,7 +180,7 @@ void Renderer::DrawQuad(const glm::vec3 p_pos, const CubeOri ori, const vec4f co
     
 }
 
-void Renderer::DrawQuad(const glm::vec3 p_pos, const CubeOri ori, std::string texName) {
+void Renderer::DrawQuad(const glm::vec3 p_pos, const glm::vec3 rot, const glm::vec2 size, std::string texName) {
     if (Data.IndexCount >= MaxIndexCount || Data.TexSlotIndex > 31)
     {
         EndBatch();
@@ -219,10 +190,10 @@ void Renderer::DrawQuad(const glm::vec3 p_pos, const CubeOri ori, std::string te
 
     uint32_t texID = Vision::Manager::GetTexture(texName).GetID();
 
-    vec4f color = vec4f(1.0f, 1.0f, 1.0f, 1.0f);
-    float sizeOffset = 0.5f;
-    vec3f pos[4];
-    GenOriVerts(ori, sizeOffset, p_pos, pos);
+    glm::vec4 color(1.0f);
+    glm::vec2 sizeOffset = size/2.0f;
+    glm::vec4 pos[4];
+    GenOriVerts(rot, sizeOffset, p_pos, pos);
 
     float textureIndex = 0.0f;
     for (uint32_t i = 0; i < Data.TexSlotIndex; i++)
@@ -244,25 +215,88 @@ void Renderer::DrawQuad(const glm::vec3 p_pos, const CubeOri ori, std::string te
     
 
     Data.QuadBufferPtr->Pos = pos[0];
-    Data.QuadBufferPtr->TexCoord = vec2f(0.0f, 0.0f);
+    Data.QuadBufferPtr->TexCoord = glm::vec2(0.0f, 0.0f);
     Data.QuadBufferPtr->Color = color;
     Data.QuadBufferPtr->TexID = textureIndex;
     Data.QuadBufferPtr++;
 
     Data.QuadBufferPtr->Pos = pos[1];
-    Data.QuadBufferPtr->TexCoord = vec2f(1.0f, 0.0f);
+    Data.QuadBufferPtr->TexCoord = glm::vec2(1.0f, 0.0f);
     Data.QuadBufferPtr->Color = color;
     Data.QuadBufferPtr->TexID = textureIndex;
     Data.QuadBufferPtr++;
 
     Data.QuadBufferPtr->Pos = pos[2];
-    Data.QuadBufferPtr->TexCoord = vec2f(1.0f, 1.0f);
+    Data.QuadBufferPtr->TexCoord = glm::vec2(1.0f, 1.0f);
     Data.QuadBufferPtr->Color = color;
     Data.QuadBufferPtr->TexID = textureIndex;
     Data.QuadBufferPtr++;
 
     Data.QuadBufferPtr->Pos = pos[3];
-    Data.QuadBufferPtr->TexCoord = vec2f(0.0f, 1.0f);
+    Data.QuadBufferPtr->TexCoord = glm::vec2(0.0f, 1.0f);
+    Data.QuadBufferPtr->Color = color;
+    Data.QuadBufferPtr->TexID = textureIndex;
+    Data.QuadBufferPtr++;
+
+    Data.IndexCount += 6;
+}
+
+void Renderer::DrawQuad(const glm::vec3 p_pos, const glm::vec3 rot, const glm::vec2 size, glm::vec2 tilePos, std::string texName) {
+    if (Data.IndexCount >= MaxIndexCount || Data.TexSlotIndex > 31)
+    {
+        EndBatch();
+        Flush();
+        StartBatch();
+    }
+
+    uint32_t texID = Vision::Manager::GetTileMap(texName).GetID();
+    float texSize = Vision::Manager::GetTileMap(texName).GetTile();
+    glm::vec2 texPos(tilePos.x*texSize, tilePos.y*texSize);
+
+    glm::vec4 color(1.0f, 1.0f, 1.0f, 1.0f);
+    glm::vec2 sizeOffset = size/2.0f;
+    glm::vec4 pos[4];
+    GenOriVerts(rot, sizeOffset, p_pos, pos);
+
+    float textureIndex = 0.0f;
+    for (uint32_t i = 0; i < Data.TexSlotIndex; i++)
+    {
+        if (Data.TextureSlots[i] == texID)
+        {
+            textureIndex = (float)i;
+            break;
+        }
+        
+    }
+    
+    if (textureIndex == 0.0f)
+    {
+        textureIndex = (float)Data.TexSlotIndex;
+        Data.TextureSlots[Data.TexSlotIndex] = texID;
+        Data.TexSlotIndex++;
+    }
+    
+
+    Data.QuadBufferPtr->Pos = pos[0];
+    Data.QuadBufferPtr->TexCoord = texPos;
+    Data.QuadBufferPtr->Color = color;
+    Data.QuadBufferPtr->TexID = textureIndex;
+    Data.QuadBufferPtr++;
+
+    Data.QuadBufferPtr->Pos = pos[1];
+    Data.QuadBufferPtr->TexCoord = texPos + glm::vec2(texSize, 0.0f);
+    Data.QuadBufferPtr->Color = color;
+    Data.QuadBufferPtr->TexID = textureIndex;
+    Data.QuadBufferPtr++;
+
+    Data.QuadBufferPtr->Pos = pos[2];
+    Data.QuadBufferPtr->TexCoord = texPos + glm::vec2(texSize);
+    Data.QuadBufferPtr->Color = color;
+    Data.QuadBufferPtr->TexID = textureIndex;
+    Data.QuadBufferPtr++;
+
+    Data.QuadBufferPtr->Pos = pos[3];
+    Data.QuadBufferPtr->TexCoord = texPos + glm::vec2(0.0f, texSize);
     Data.QuadBufferPtr->Color = color;
     Data.QuadBufferPtr->TexID = textureIndex;
     Data.QuadBufferPtr++;
@@ -324,7 +358,7 @@ void Renderer::InitEnable(const vec2i& p_windowSize, const std::string windowNam
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); 
 
     glEnable(GL_CULL_FACE);
-    glCullFace(GL_FRONT); 
+    glCullFace(GL_BACK); 
 
     glfwSetScrollCallback(window, scrollCallback);
     glfwSetCursorPosCallback(window, mouseCallback);
