@@ -24,7 +24,7 @@ Renderer2D::Renderer2D() {
 
 static RendererData Data;
 GLFWwindow* Renderer2D::window;
-vec2i Renderer2D::windowSize;
+glm::vec2 Renderer2D::windowSize(1.0f);
 
 void Renderer2D::Init() {
     Data.QuadBuffer = new Vertex2D[MaxVertexCount];
@@ -322,8 +322,12 @@ void Renderer2D::EndEvents() {
 
 void scrollCallback2D(GLFWwindow* window, double xoffset, double yoffset);
 void mouseCallback2D(GLFWwindow* window, double xpos, double ypos);
+void frameSizeCallback2D(GLFWwindow* window, int width, int height) {
+    Vision2D::Renderer2D::windowSize = {width, height};
+    glViewport(0, 0, width, height);
+}
 
-void Renderer2D::InitEnable(const vec2i& p_windowSize, const std::string windowName) {
+void Renderer2D::InitEnable(const glm::vec2 p_windowSize, const std::string windowName) {
     windowSize = p_windowSize;
     /* Initialize the library */
     if (!glfwInit())
@@ -357,11 +361,12 @@ void Renderer2D::InitEnable(const vec2i& p_windowSize, const std::string windowN
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glEnable(GL_DEPTH_TEST);
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); 
+    //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); 
 
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK); 
 
     glfwSetScrollCallback(window, scrollCallback2D);
     glfwSetCursorPosCallback(window, mouseCallback2D);
+    glfwSetFramebufferSizeCallback(window, frameSizeCallback2D);
 }

@@ -23,7 +23,7 @@ Renderer::Renderer() {
 
 static RendererData Data;
 GLFWwindow* Renderer::window;
-vec2i Renderer::windowSize;
+glm::vec2 Renderer::windowSize(1.0f);
 
 void Renderer::Init() {
     Data.QuadBuffer = new Vertex[MaxVertexCount];
@@ -320,8 +320,12 @@ void Renderer::EndEvents() {
 
 void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 void mouseCallback(GLFWwindow* window, double xpos, double ypos);
+void frameSizeCallback(GLFWwindow* window, int width, int height) {
+    Vision::Renderer::windowSize = {width, height};
+    glViewport(0, 0, width, height);
+}
 
-void Renderer::InitEnable(const vec2i& p_windowSize, const std::string windowName) {
+void Renderer::InitEnable(const glm::vec2 p_windowSize, const std::string windowName) {
     windowSize = p_windowSize;
     /* Initialize the library */
     if (!glfwInit())
@@ -362,4 +366,5 @@ void Renderer::InitEnable(const vec2i& p_windowSize, const std::string windowNam
 
     glfwSetScrollCallback(window, scrollCallback);
     glfwSetCursorPosCallback(window, mouseCallback);
+    glfwSetFramebufferSizeCallback(window, frameSizeCallback);
 }

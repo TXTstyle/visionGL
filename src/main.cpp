@@ -19,8 +19,7 @@
 #include "Camera2D.hpp"
 
 void Main3D() {
-    vec2i WinRes(1280, 720);
-    Vision::Renderer::InitEnable(WinRes, "VisionGL");
+    Vision::Renderer::InitEnable({1280.0f, 720.0f}, "VisionGL");
     Vision::Renderer::Init();
 
     Vision::Manager::LoadShader("res/shaders/Basic.vert", "res/shaders/Basic.frag", nullptr, "Basic");
@@ -28,7 +27,7 @@ void Main3D() {
     Vision::Manager::LoadTileMap("res/textures/TileMapTest.png", false, 2, "TileMap");
     Vision::Manager::GetShader("Basic").SetIntArrayInit("u_Textures");
 
-    Vision::Camera camera(WinRes, {0.1f, 500.0f}, 45.0f, 3.0f);
+    Vision::Camera camera({0.1f, 500.0f}, 45.0f, 3.0f);
 
     while (!Vision::Renderer::WindowShouldClose())
     {
@@ -62,20 +61,17 @@ void Main3D() {
 }
 
 void Main2D() {
-    vec2i WinRes(1280, 720);
-    Vision2D::Renderer2D::InitEnable(WinRes, "VisionGL");
+    Vision2D::Renderer2D::InitEnable({1280.0f, 720.0f}, "VisionGL");
     
 
     Vision2D::Renderer2D::Init();
     Vision::Manager::LoadShader("res/shaders/Basic2D.vert", "res/shaders/Basic2D.frag", nullptr, "Basic2D");
-    Vision::Manager::LoadShader("res/shaders/Basic2D.vert", "res/shaders/TexCoord2D.frag", nullptr, "TexCoord2D");
 
     Vision::Manager::LoadTexture("res/textures/Grass_texture.png", true, "Grass");
     Vision::Manager::LoadTileMap("res/textures/TileMapTest.png", false, 2, "TileMap");
     Vision::Manager::GetShader("Basic2D").SetIntArrayInit("u_Textures");
-    Vision::Manager::GetShader("TexCoord2D").SetIntArrayInit("u_Textures");
 
-    Vision2D::Camera2D camera(WinRes, 1.0f, 12.0f);
+    Vision2D::Camera2D camera(1.0f, 12.0f);
 
 
     while (!Vision2D::Renderer2D::WindowShouldClose())
@@ -103,8 +99,6 @@ void Main2D() {
         Vision2D::Renderer2D::DrawQuad({290, 250}, {32, 32}, 85, {0,1}, "TileMap");
         Vision2D::Renderer2D::DrawQuad({290, 290}, {32, 32}, 100, {1,0}, "TileMap");
         Vision2D::Renderer2D::DrawQuad({250, 290}, {32, 32}, 230, {1,1}, "TileMap");
-        
-        //Vision2D::Renderer2D::DrawQuad({500, 500}, {256, 256}, 0, {0,0}, "TileMap");
 
         Vision2D::Renderer2D::EndBatch();
 
@@ -120,7 +114,5 @@ void Main2D() {
 int main(int argc, char const *argv[])
 {
     0 ? Main3D() : Main2D();
-    //Main3D();
-    //Main2D();
     return 0;
 }

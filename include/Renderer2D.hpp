@@ -38,7 +38,7 @@ namespace Vision2D{
         Renderer2D();
     public:
         static GLFWwindow* window;
-        static vec2i windowSize;
+        static glm::vec2 windowSize;
 
         static void Init();
         static void Shutdown();
@@ -54,6 +54,6 @@ namespace Vision2D{
         static void Clear(const glm::vec3 color);
         static bool WindowShouldClose();
         static void EndEvents();
-        static void InitEnable(const vec2i& p_windowSize, const std::string windowName);
+        static void InitEnable(const glm::vec2 p_windowSize, const std::string windowName);
     };
 }

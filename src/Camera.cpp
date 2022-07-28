@@ -5,12 +5,13 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include "Math.hpp"
+#include "Renderer.hpp"
 
 using namespace Vision;
 
-Camera::Camera(const vec2i &p_res, const glm::vec2 p_clip, float p_fov, float p_camSpeed)
-: winRes(p_res), camClip(p_clip), camSpeed(p_camSpeed),  camFov(p_fov) {
-    projMat = glm::perspective(glm::radians(camFov), ((float)winRes.x/winRes.y), camClip.x, camClip.y);
+Camera::Camera(const glm::vec2 p_clip, float p_fov, float p_camSpeed)
+: camClip(p_clip), camSpeed(p_camSpeed),  camFov(p_fov) {
+    projMat = glm::perspective(glm::radians(camFov), Vision::Renderer::windowSize.x/Vision::Renderer::windowSize.y, camClip.x, camClip.y);
     viewMat = glm::lookAt(camPos, glm::vec3(0.0f), camUp);
 }
 
@@ -89,7 +90,7 @@ void Camera::Controls() {
     
     viewMat = glm::lookAt(camPos, camPos + camFront, camUp);
     camFov *= scroll;
-    projMat = glm::perspective(glm::radians(camFov), ((float)winRes.x/winRes.y), camClip.x, camClip.y);
+    projMat = glm::perspective(glm::radians(camFov), Vision::Renderer::windowSize.x/Vision::Renderer::windowSize.y, camClip.x, camClip.y);
     scroll = 1;
 }
 

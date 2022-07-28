@@ -8,9 +8,9 @@
 
 using namespace Vision2D;
 
-Camera2D::Camera2D(const vec2i &p_res, float p_zoom, float p_camSpeed)
-: winRes(p_res), camSpeed(p_camSpeed),  camZoom(p_zoom) {
-    projMat = glm::ortho(0.0f, (float)winRes.x, 0.0f, (float)winRes.y);
+Camera2D::Camera2D(float p_zoom, float p_camSpeed)
+: camSpeed(p_camSpeed),  camZoom(p_zoom) {
+    projMat = glm::ortho(0.0f, Vision2D::Renderer2D::windowSize.x, 0.0f, Vision2D::Renderer2D::windowSize.y);
     viewMat = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f));
 }
 
@@ -61,6 +61,7 @@ void Camera2D::Controls() {
     }
     
     viewMat = glm::translate(viewMat, glm::vec3(camPos.x, camPos.y, 0));
+    projMat = glm::ortho(0.0f, Vision2D::Renderer2D::windowSize.x, 0.0f, Vision2D::Renderer2D::windowSize.y);
     camZoom *= scroll2D;
     //std::cout << camZoom << std::endl;
 

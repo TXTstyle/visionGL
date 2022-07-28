@@ -8,7 +8,6 @@ namespace Vision2D {
     class Camera2D
     {
     private:
-        const vec2i &winRes;
 
         float camSpeed;
         float camZoom;
@@ -21,7 +20,7 @@ namespace Vision2D {
         glm::mat4 projMat;
         glm::mat4 viewMat;
     public:
-        Camera2D(const vec2i &p_res, float p_zoom, float p_camSpeed);
+        Camera2D(float p_zoom, float p_camSpeed);
         ~Camera2D();
 
         glm::mat4& getProjMat();

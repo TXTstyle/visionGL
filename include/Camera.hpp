@@ -8,14 +8,13 @@ namespace Vision {
     class Camera
     {
     private:
-        const vec2i &winRes;
 
         const glm::vec2 camClip;
         float camSpeed;
         float camFov;
         float yaw = -90.0f;
         float pitch = 0.0f;
-        float lastX = winRes.x/2, lastY = winRes.y/2;
+        float lastX = 0.0f, lastY = 0.0f;
         bool firstMouse = true;
         float sensitivity = 0.075f;
 
@@ -29,7 +28,7 @@ namespace Vision {
         glm::mat4 projMat;
         glm::mat4 viewMat;
     public:
-        Camera(const vec2i &p_res, const glm::vec2 p_clip, float p_fov, float p_camSpeed);
+        Camera(const glm::vec2 p_clip, float p_fov, float p_camSpeed);
         ~Camera();
 
         glm::mat4& getProjMat();
